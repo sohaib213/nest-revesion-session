@@ -1,0 +1,72 @@
+[
+  {
+    "email": "Tiana35@gmail.com",
+    "username": "Marc_Fisher67",
+    "age": 37,
+    "role": "admin",
+    "password": "$2b$10$jIwyQFAXbTd/CCc1FQsk/uqGU7Dh.JZBoVUQcEZ8JI5X7qWhOWPHy"
+  },
+  {
+    "email": "Anais_Feeney@gmail.com",
+    "username": "Jacinto.Smith26",
+    "age": 44,
+    "role": "user",
+    "password": "$2b$10$anrFerIuGhdih5i24inC9ufiBBiWcsPUKVo15Q3FstFn2j.IMd56e"
+  },
+  {
+    "email": "Harvey22@hotmail.com",
+    "username": "Reuben39",
+    "age": 24,
+    "role": "user",
+    "password": "$2b$10$OuBo4qemJ8tDRreplx3kKuWy36Q/4YYnlNaGi/K.3sWimoqr8d3Gq"
+  },
+  {
+    "email": "Demario.Wyman@yahoo.com",
+    "username": "Rebeka.OConnell17",
+    "age": 55,
+    "role": "admin",
+    "password": "$2b$10$uK0swTDKYgdWSPoRxkxRyucAQgF54J0VnZ1nqGN8aSrtqJxg7hZT6"
+  },
+  {
+    "email": "Mireille40@hotmail.com",
+    "username": "Emelia.Strosin7",
+    "age": 23,
+    "role": "user",
+    "password": "$2b$10$.X2YsnR5TUvPa5115icc5uM2EjSLt1rK0RFiZC4aTHJG.UAxTcZcK"
+  },
+  {
+    "email": "Jessika_Rolfson81@yahoo.com",
+    "username": "Hudson59",
+    "age": 46,
+    "role": "user",
+    "password": "$2b$10$1fGfN5TZjH/VODKrQ7xmieNGGg9lrWTY4PfmCnKNoievXxjY37Z76"
+  },
+  {
+    "email": "Teagan.Dietrich96@hotmail.com",
+    "username": "Lawrence_Wiegand",
+    "age": 31,
+    "role": "user",
+    "password": "$2b$10$KgqA6ifLj71UAJyFYGMGL.x6PzBHtE0GiX/qbIhU8dpzzZHcQIbFW"
+  },
+  {
+    "email": "Gerson.Wunsch@hotmail.com",
+    "username": "Wade37",
+    "age": 22,
+    "role": "user",
+    "password": "$2b$10$FggYdPtsS864jpW.C0LwPulFqdg/P6Q7i5tDeZp6I5hGvCAt5MxQK"
+  },
+  {
+    "email": "Sharon92@yahoo.com",
+    "username": "Addison_Lind1",
+    "age": 24,
+    "role": "user",
+    "password": "$2b$10$KVuG/bCZ1LLxs5BaMl9QX.uP/KAgTFkYKWzPzkP2W19j9stqIBWzq"
+  },
+  {
+    "email": "Linda.Heller15@hotmail.com",
+    "username": "Vladimir.Wunsch",
+    "age": 43,
+    "role": "admin",
+    "password": "$2b$10$mCsfxYLCWfGgF9Kf6EJBzOVUdIU76pAReHvd3ULFNPvByQrwBL3wm"
+  }
+]

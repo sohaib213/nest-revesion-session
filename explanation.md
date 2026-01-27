@@ -1,67 +1,25 @@
 # NestJS User Controller Setup Guide
 
-## 1. Create User Controller
+## 1. Create User Module
+
+## 2. Create User Controller
 
 Create a controller class with `getAllUsers` and `createUser` functions:
+[Users Controller](src/users/users.controller.ts)
 
-```typescript
-import { Body, Controller, Get, Post } from '@nestjs/common';
-import { CreateUserDto } from './dto/createUser.dto';
-
-@Controller('users')
-export class UserController {
-  @Get()
-  getAllUsers() {
-    return 'g';
-  }
-
-  @Post()
-  createUser(@Body() body: CreateUserDto) {
-    return 'u';
-  }
-}
-```
-
-## 2. Create DTO (Data Transfer Object)
+## 3. DTO (Data Transfer Object)
 
 ### Install Required Packages
 
 ```bash
-npm i --save class-validator class-transformer
+npm i --save class-validator class-transformer @nestjs/mapped-types
 ```
 
-### Create CreateUserDto Class
+#### Build CreateUserDto Class
 
-```typescript
-import { Type } from 'class-transformer';
-import {
-  IsEmail,
-  IsNumber,
-  IsOptional,
-  IsString,
-  MinLength,
-} from 'class-validator';
+[CreatUserDto](src/users/dto/createUser.dto.ts)
 
-export class CreateUserDto {
-  @IsString()
-  @IsEmail()
-  email: string;
-
-  @IsString()
-  @MinLength(5, { message: 'Password must be at least 6 characters long' })
-  password: string;
-
-  @IsOptional()
-  @IsString()
-  username?: string;
-
-  @Type(() => Number)
-  @IsNumber()
-  age: number;
-}
-```
-
-## 3. Configure Global Validation Pipe
+### Configure Global Validation Pipe
 
 In `main.ts`, add global validation configuration:
 
@@ -75,75 +33,33 @@ app.useGlobalPipes(
 );
 ```
 
-## 4. Create Transform Interceptor
+## 4. Create Service class
+
+implement functions `getAllUsers`, `createUser`
+[UserService](src/users/users.service.ts)
+
+## 5. Create Transform Interceptor
 
 Create an interceptor that is `Injectable` and implements `NestInterceptor`:
+[Interceptor](src/common/interceptors/transform.interceptor.ts)
 
-```typescript
-import {
-  CallHandler,
-  ExecutionContext,
-  Injectable,
-  NestInterceptor,
-} from '@nestjs/common';
-import { map, Observable } from 'rxjs';
+## Task1
 
-@Injectable()
-export class TransformInterceptor implements NestInterceptor {
-  intercept(
-    context: ExecutionContext,
-    next: CallHandler<any>,
-  ): Observable<any> | Promise<Observable<any>> {
-    return next.handle().pipe(
-      map((data) => ({
-        success: true,
-        data,
-        timestamp: new Date(),
-      })),
-    );
-  }
-}
+create new resource DNS
+
+```bash
+nest g resource dns
 ```
 
-## 5. Create Exception Filter
+implement functions `getIp()`, `addIp()` and creating suitable DTO
+[DNS CONTROLLER](src/dns/dns.service.ts)
 
-Create an exception filter with `@Catch` decorator that implements `ExceptionFilter` to uniformize responses:
+## 6. Create Exception Filter
 
-```typescript
-import {
-  ArgumentsHost,
-  Catch,
-  ExceptionFilter,
-  HttpException,
-  HttpStatus,
-} from '@nestjs/common';
-import { Response } from 'express';
+Create an exception filter with `@Catch` decorator that implements `ExceptionFilter` to uniformize exceptions responses:
+[Exception Filter](src/common/filters/allExceptionFilter.ts)
 
-@Catch()
-export class AllExceptionFilter implements ExceptionFilter {
-  catch(exception: any, host: ArgumentsHost) {
-    const ctx = host.switchToHttp();
-    const response = ctx.getResponse<Response>();
-
-    let statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
-    let message: string | object = 'Internal Server Error';
-
-    if (exception instanceof HttpException) {
-      statusCode = exception.getStatus();
-      message = exception.getResponse();
-    }
-
-    response.status(statusCode).json({
-      success: false,
-      statusCode,
-      error: message,
-      timestamp: new Date(),
-    });
-  }
-}
-```
-
-## 6. Build AuthGaurd
+## 7. Build AuthGaurd for updateUser
 
 create AuthGauard class with `Injectable()` decorator and implements `CanActivate`
 
@@ -153,46 +69,36 @@ we need install jwt
 npm i --save @nestjs/jwt
 ```
 
-the class:
+[AuthGuard](src/common/guards/AuthGuard.guard.ts)
+
+create interface JwtPayload
+[JwtInterface](src/common/interfaces/JwtPayload-interface.ts)
+
+configure jwt in users module
 
 ```typescript
-import {
-  CanActivate,
-  ExecutionContext,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { Request } from 'express';
-import { RequestWithUser } from '../interfaces/requestWithUser-interface';
-import { JwtPayload } from '../interfaces/JwtPayload-interface';
-
-@Injectable()
-export class AuthGuard implements CanActivate {
-  constructor(private readonly jwtService: JwtService) {}
-
-  async canActivate(context: ExecutionContext): Promise<boolean> {
-    const req: RequestWithUser = context.switchToHttp().getRequest();
-    const token = this.extractToken(req);
-    try {
-      const payload: JwtPayload = await this.jwtService.verifyAsync(token);
-      req.currentUser = payload;
-    } catch {
-      throw new UnauthorizedException();
-    }
-
-    return true;
-  }
-
-  extractToken(req: Request): string {
-    const authorization = req.headers.authorization;
-    if (!authorization) throw new UnauthorizedException('Token Not Found');
-    const [type, token] = authorization.split(' ');
-    if (type !== 'Bearer' || !token)
-      throw new UnauthorizedException('Token Not Found');
-    return token;
-  }
-}
+  imports: [
+    JwtModule.register({
+      global: true,
+      secret: process.env.JWT_SECRET_KEY,
+      signOptions: { expiresIn: '5m' },
+    }),
+  ],
 ```
+
+add in imports in `app.module` to allow `.env`
+
+```typescript
+ConfigModule.forRoot({ isGlobal: true });
+```
+
+## 8. implement login function
+
+[Login](src/users/users.service.ts#L48)
+
+## Task2
+
+build role guard to protect addIp
+implement functions update, delete IP with verify the user
 
 ---

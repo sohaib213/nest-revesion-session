@@ -1,0 +1,101 @@
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
+import users from '../common/data/users.json';
+import { UpdateUserDto } from './dto/updateUser.dto';
+import { LoginDto } from './dto/login.dto';
+import * as bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
+import { UserEntity } from './entities/user.entity';
+import { JwtPayload } from 'src/common/interfaces/JwtPayload-interface';
+import { CreateUserDto } from './dto/createUser.dto';
+
+@Injectable()
+export class UsersService {
+  constructor(private readonly jwtService: JwtService) {}
+
+  private readonly saltOrRounds = 10;
+
+  // we implement
+  getAllUsers() {
+    return users.map((user) => {
+      return {
+        email: user.email,
+        username: user.username,
+        age: user.age,
+        role: user.role,
+      };
+    });
+  }
+
+  // get users by querry
+  // getAllUsers(querry: GetUsersQuerryDto) {
+  //   return users
+  //     .filter((user) => {
+  //       if (
+  //         (querry.age && querry.age !== user.age) ||
+  //         (querry.email && querry.email !== user.email) ||
+  //         (querry.username && querry.username !== user.username)
+  //       ) {
+  //         return false;
+  //       } else return true;
+  //     })
+  //     .map((user) => {
+  //       return {
+  //         email: user.email,
+  //         username: user.username,
+  //         age: user.age,
+  //       };
+  //     });
+  // }
+
+  async createUser(createUserDto: CreateUserDto) {
+    const { email, password, confirmedPassword, age, role } = createUserDto;
+    let username = createUserDto.username;
+    if (password !== confirmedPassword)
+      throw new BadRequestException("Passwords dosen't match");
+    if (!username) username = email.split('@')[0];
+    const hashedPassword = await bcrypt.hash(password, this.saltOrRounds);
+    const newUser: UserEntity = {
+      email,
+      username,
+      age,
+      password: hashedPassword,
+      role,
+    };
+    users.push(newUser);
+    return {
+      newUser: {
+        email: newUser.email,
+        username: newUser.username,
+        age: newUser.age,
+      },
+    };
+  }
+  updateUser(updateUserDto: UpdateUserDto) {}
+
+  async login({ email, password }: LoginDto) {
+    const userFound = users.find((user) => user.email === email) as UserEntity;
+    if (!userFound)
+      throw new UnauthorizedException('Invalid email or password');
+    const passwordMatch = await bcrypt.compare(password, userFound.password);
+    if (!passwordMatch)
+      throw new UnauthorizedException('Invalid email or password');
+    const token = await this.generateToken(userFound);
+    console.log(token);
+    return { token };
+  }
+
+  async generateToken(user: UserEntity) {
+    const payload: JwtPayload = {
+      email: user.email,
+      username: user.username,
+      age: user.age,
+      role: user.role,
+    };
+    console.log('payload: ', payload);
+    return await this.jwtService.signAsync(payload);
+  }
+}

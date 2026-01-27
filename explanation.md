@@ -2,6 +2,30 @@
 
 ## 1. Create User Module
 
+```typescript
+import { Module } from '@nestjs/common';
+import { UsersService } from './users.service';
+import { UserController } from './users.controller';
+import { JwtModule } from '@nestjs/jwt';
+
+@Module({
+  imports: [
+    JwtModule.register({
+      global: true,
+      secret: process.env.JWT_SECRET_KEY,
+      signOptions: { expiresIn: '5m' },
+    }),
+  ],
+  providers: [UsersService],
+  controllers: [UserController],
+})
+export class UsersModule {}
+```
+
+Note: Don't forget Nest CLI
+
+task: Make a DNS module
+
 ## 2. Create User Controller
 
 Create a controller class with `getAllUsers` and `createUser` functions:
@@ -37,6 +61,8 @@ app.useGlobalPipes(
 
 implement functions `getAllUsers`, `createUser`
 [UserService](src/users/users.service.ts)
+
+### Don't forget CLI
 
 ## 5. Create Transform Interceptor
 

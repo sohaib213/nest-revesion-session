@@ -1,6 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { DnsService } from './dns.service';
-import { CreateDnDto } from './dto/create-dn.dto';
+import { DnsDto } from './dto/dns.dto';
 import { UpdateDnDto } from './dto/update-dn.dto';
 
 @Controller('dns')
@@ -8,23 +16,18 @@ export class DnsController {
   constructor(private readonly dnsService: DnsService) {}
 
   @Post()
-  create(@Body() createDnDto: CreateDnDto) {
-    return this.dnsService.create(createDnDto);
+  create(@Body() createDnDto: DnsDto) {
+    return this.dnsService.addIp(createDnDto);
   }
 
-  @Get()
-  findAll() {
-    return this.dnsService.findAll();
+  @Get(':domainName')
+  getIP(@Param('domainName') domainName: string) {
+    return this.dnsService.findIP(domainName);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.dnsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDnDto: UpdateDnDto) {
-    return this.dnsService.update(+id, updateDnDto);
+  @Patch()
+  update(@Body() updateDnDto: DnsDto) {
+    return this.dnsService.update(updateDnDto);
   }
 
   @Delete(':id')

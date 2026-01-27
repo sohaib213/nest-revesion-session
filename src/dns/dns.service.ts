@@ -1,23 +1,30 @@
-import { Injectable } from '@nestjs/common';
-import { CreateDnDto } from './dto/create-dn.dto';
-import { UpdateDnDto } from './dto/update-dn.dto';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { DnsDto } from './dto/dns.dto';
+import { dnsRecords } from 'src/common/data/dnsDomains';
 
 @Injectable()
 export class DnsService {
-  create(createDnDto: CreateDnDto) {
-    return 'This action adds a new dn';
+  findIP(domainName: string) {
+    const ip = dnsRecords.get(domainName);
+    if (!ip) throw new NotFoundException('domain name not found');
+    return { ip };
   }
 
-  findAll() {
-    return `This action returns all dns`;
+  addIp(addDn: DnsDto) {
+    if (dnsRecords.has(addDn.domain_name))
+      throw new ConflictException('domain name already exists');
+    dnsRecords.set(addDn.domain_name, addDn.ip);
+    console.log(dnsRecords);
   }
-
-  findOne(id: number) {
-    return `This action returns a #${id} dn`;
-  }
-
-  update(id: number, updateDnDto: UpdateDnDto) {
-    return `This action updates a #${id} dn`;
+  update(updateDnDto: DnsDto) {
+    if (!dnsRecords.has(updateDnDto.domain_name))
+      throw new BadRequestException('domain name not found');
+    dnsRecords.set(updateDnDto.domain_name, updateDnDto.ip);
   }
 
   remove(id: number) {

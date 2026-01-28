@@ -27,7 +27,7 @@ export class AllExceptionFilter implements ExceptionFilter {
         'message' in responseData
       ) {
         message = responseData.message;
-        console.log('Res Data => ', responseData);
+        // console.log('Res Data => ', responseData);
       }
     }
 

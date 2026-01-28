@@ -6,7 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { DnsModule } from './dns/dns.module';
 
 @Module({
-  imports: [UsersModule, ConfigModule.forRoot({ isGlobal: true }), DnsModule],
+  imports: [ConfigModule.forRoot({ isGlobal: true }), UsersModule, DnsModule],
   controllers: [AppController],
   providers: [AppService],
 })

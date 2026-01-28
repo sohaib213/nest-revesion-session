@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -19,15 +18,16 @@ export class DnsService {
     if (dnsRecords.has(addDn.domain_name))
       throw new ConflictException('domain name already exists');
     dnsRecords.set(addDn.domain_name, addDn.ip);
-    console.log(dnsRecords);
   }
   update(updateDnDto: DnsDto) {
     if (!dnsRecords.has(updateDnDto.domain_name))
-      throw new BadRequestException('domain name not found');
+      throw new NotFoundException('domain name not found');
     dnsRecords.set(updateDnDto.domain_name, updateDnDto.ip);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} dn`;
+  remove(domainName: string) {
+    if (!dnsRecords.has(domainName))
+      throw new NotFoundException('domain name not found');
+    dnsRecords.delete(domainName);
   }
 }

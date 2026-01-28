@@ -104,11 +104,16 @@ configure jwt in users module
 
 ```typescript
   imports: [
-    JwtModule.register({
-      global: true,
-      secret: process.env.JWT_SECRET_KEY,
-      signOptions: { expiresIn: '5m' },
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        global: true,
+        secret: configService.get<string>('JWT_SECRET_KEY'),
+        signOptions: { expiresIn: '5m' },
+      }),
     }),
+  ],
   ],
 ```
 

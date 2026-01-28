@@ -84,7 +84,6 @@ export class UsersService {
     if (!passwordMatch)
       throw new UnauthorizedException('Invalid email or password');
     const token = await this.generateToken(userFound);
-    console.log(token);
     return { token };
   }
 
@@ -95,7 +94,6 @@ export class UsersService {
       age: user.age,
       role: user.role,
     };
-    console.log('payload: ', payload);
     return await this.jwtService.signAsync(payload);
   }
 }

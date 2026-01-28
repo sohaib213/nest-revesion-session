@@ -4,7 +4,6 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import users from '../common/data/users.json';
-import { UpdateUserDto } from './dto/updateUser.dto';
 import { LoginDto } from './dto/login.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
@@ -53,7 +52,7 @@ export class UsersService {
       },
     };
   }
-  updateUser(updateUserDto: UpdateUserDto) {}
+  // updateUser(updateUserDto: UpdateUserDto) {}
 
   async login({ email, password }: LoginDto) {
     const userFound = users.find((user) => user.email === email) as UserEntity;

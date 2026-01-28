@@ -4,6 +4,7 @@ import {
   Injectable,
   NestInterceptor,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { map, Observable } from 'rxjs';
 
 @Injectable()
@@ -13,9 +14,9 @@ export class TrnasformInterceptor implements NestInterceptor {
     next: CallHandler<any>,
   ): Observable<any> | Promise<Observable<any>> {
     return next.handle().pipe(
-      map((data) => ({
+      map((data: unknown) => ({
         success: true,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        statusCode: context.switchToHttp().getResponse<Response>().statusCode,
         data,
         timestamp: new Date(),
       })),

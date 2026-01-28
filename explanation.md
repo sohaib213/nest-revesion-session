@@ -85,6 +85,15 @@ implement functions `getIp()`, `addIp()` and creating suitable DTO
 Create an exception filter with `@Catch` decorator that implements `ExceptionFilter` to uniformize exceptions responses:
 [Exception Filter](src/common/filters/allExceptionFilter.ts)
 
+in app module
+
+```typescript
+{
+  provide: APP_FILTER,
+  useClass: AllExceptionFilter,
+},
+```
+
 ## 7. Build AuthGaurd for updateUser
 
 create AuthGauard class with `Injectable()` decorator and implements `CanActivate`

@@ -1,7 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import { AllExceptionFilter } from './common/filters/allExceptionFilter';
 import { TrnasformInterceptor } from './common/interceptors/transform.interceptor';
 
 async function bootstrap() {
@@ -13,7 +12,6 @@ async function bootstrap() {
       transform: false,
     }),
   );
-  app.useGlobalFilters(new AllExceptionFilter());
   app.useGlobalInterceptors(new TrnasformInterceptor());
   await app.listen(process.env.PORT ?? 3000);
 }

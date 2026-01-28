@@ -5,38 +5,34 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
+import { HttpAdapterHost } from '@nestjs/core';
 import { Response } from 'express';
 
-// @Catch(HttpException)
-@Catch(HttpException)
+@Catch()
 export class AllExceptionFilter implements ExceptionFilter {
+  constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
+
   catch(exception: unknown, host: ArgumentsHost) {
+    const { httpAdapter } = this.httpAdapterHost;
     const ctx = host.switchToHttp();
-    const response = ctx.getResponse<Response>();
 
     let statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
-    let message: any = 'Internal Server Error';
+
+    let message: string | string[] = 'internel server error';
     if (exception instanceof HttpException) {
       statusCode = exception.getStatus();
-      const responseData: unknown = exception.getResponse();
-      if (typeof responseData === 'string') {
-        message = responseData;
-      } else if (
-        responseData &&
-        typeof responseData === 'object' &&
-        'message' in responseData
-      ) {
-        message = responseData.message;
-        // console.log('Res Data => ', responseData);
-      }
+      const response = exception.getResponse();
+      if (typeof response == 'string') message = response;
+      else if (typeof response === 'object' && 'message' in response)
+        message = response.message as string;
     }
 
-    response.status(statusCode).json({
+    const responseBody = {
       success: false,
       statusCode,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       message,
-      timestamp: new Date(),
-    });
+      timestamp: new Date().toISOString(),
+    };
+    httpAdapter.reply(ctx.getResponse(), responseBody, statusCode);
   }
 }

@@ -30,27 +30,6 @@ export class UsersService {
     });
   }
 
-  // get users by querry
-  // getAllUsers(querry: GetUsersQuerryDto) {
-  //   return users
-  //     .filter((user) => {
-  //       if (
-  //         (querry.age && querry.age !== user.age) ||
-  //         (querry.email && querry.email !== user.email) ||
-  //         (querry.username && querry.username !== user.username)
-  //       ) {
-  //         return false;
-  //       } else return true;
-  //     })
-  //     .map((user) => {
-  //       return {
-  //         email: user.email,
-  //         username: user.username,
-  //         age: user.age,
-  //       };
-  //     });
-  // }
-
   async createUser(createUserDto: CreateUserDto) {
     const { email, password, confirmedPassword, age, role } = createUserDto;
     let username = createUserDto.username;
